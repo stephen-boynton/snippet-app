@@ -19,7 +19,7 @@ form.addEventListener("submit", function(event) {
 	};
 	loginUser(userCred).then(function(response) {
 		console.log("response for logging in!", response);
-		setToken(response.token);
+		if (response) setToken(response.token);
 		event.target.querySelector('input[name="username"]').value = "";
 		event.target.querySelector('input[name="password"]').value = "";
 	});

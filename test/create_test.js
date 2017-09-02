@@ -16,9 +16,14 @@ describe("Creating User", () => {
 describe("Creating snippet", () => {
 	it("saves a snippet", () => {
 		const joe = User.find({ name: "Joe" });
-		const snip = new Snippet({ title: "My Snippet", author: joe._id });
+		const snip = new Snippet({
+			title: "My Snippet",
+			author: joe._id,
+			code:
+				"function hamSammich(ham, bread, cheese) { return bread + ham + cheese + bread}"
+		});
 		snip.save().then(() => {
-			joe.snippets.push(snip);
+			console.log(snip);
 			//has joe been saved????????????????
 			//is new flag is false when it is in the database
 			//isNew flag is true when only exists in Node-land

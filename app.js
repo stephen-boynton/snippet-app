@@ -18,17 +18,21 @@ app.use(
 		resave: false
 	})
 );
+app.use("/", homeRoutes);
 
-function loggedIn(req, res, next) {
+app.get("/", (req, res) => {
+	res.render("index");
+});
+
+app.use((req, res, next) => {
 	if (req.session.user) {
+		req.session.message = "";
 		next();
 	} else {
 		req.session.AU = false;
 		next();
 	}
-}
-
-app.use("/", homeRoutes);
+});
 
 app.set("port", 3000);
 
