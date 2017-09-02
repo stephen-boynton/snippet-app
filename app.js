@@ -1,13 +1,15 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const mustacheExpress = require("mustache-express");
-
+const homeRoutes = require("./routes/home");
 app.engine("mustache", mustacheExpress());
 app.set("view engine", "mustache");
 app.set("views", __dirname + "/views");
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
 	session({
@@ -17,9 +19,16 @@ app.use(
 	})
 );
 
-app.get("/signup", (req, res) => {
-	res.render("signup");
-});
+function loggedIn(req, res, next) {
+	if (req.session.user) {
+		next();
+	} else {
+		req.session.AU = false;
+		next();
+	}
+}
+
+app.use("/", homeRoutes);
 
 app.set("port", 3000);
 

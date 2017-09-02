@@ -1,0 +1,11 @@
+{{>_header}}
+<div class="login">
+  <h2>Log In to _snipe_</h2>
+  <h4>{{message}}</h4>
+  <form class="login-form" action="/login" method="POST">
+    <input type="text" name="username" placeholder="Username" value="">
+    <input type="password" name="password" placeholder="Password" value="">
+    <button type="submit" class="btn btn-outline-success" name="button">Sign In</button>
+  </form>
+</div>
+{{>_footer}}
