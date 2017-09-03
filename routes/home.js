@@ -21,9 +21,11 @@ router.route("/login").get((req, res) => {
 });
 
 router.route("/login").post((req, res) => {
-	getByUserName(req.body).then(user => {
+	getByUserName(req.body.username).then(user => {
 		console.log(user[0]);
 		if (!user[0]) {
+			req.session.message = "Invalid username or password.";
+			req.session.save();
 			res.redirect("/login");
 		} else {
 			User.validPassword(

@@ -4,8 +4,8 @@ mongoose.Promise = require("bluebird");
 
 mongoose.connect("mongodb://localhost:27017/snippetdb");
 
-function getByUserName(user) {
-	return User.find({ username: user.username });
+function getByUserName(userName) {
+	return User.find({ username: userName });
 }
 
 function addUser(newUser) {
@@ -21,6 +21,9 @@ function addUser(newUser) {
 		bio: newUser.bio
 	});
 	console.log(user);
+	if (user.img === "")
+		user.img =
+			"https://openclipart.org/download/247316/abstract-user-flat-2.svg";
 	user.save(function(err) {
 		console.log(err);
 	});

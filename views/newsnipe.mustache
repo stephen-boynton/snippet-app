@@ -1,0 +1,17 @@
+{{>_header}}
+<div class="new-snippet">
+  <h2>Add a New Snippet</h2>
+  <form class="new-snippet-form" action="index.html" method="post">
+    <input type="text" name="title" value="" placeholder="Snippet Name">
+    <select class="language-select" name="language">
+      <option value="HTML">HTML</option>
+      <option value="CSS ">CSS</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="Python">Python</option>
+    </select>
+    <textarea name="code" rows="8" cols="40" placeholder="Your code..."></textarea>
+    <textarea name="notes" rows="8" cols="40" placeholder="Your code..."></textarea>
+    <input type="text" name="tags" placeholder="Tags">
+  </form>
+</div>
+{{>_footer}}
