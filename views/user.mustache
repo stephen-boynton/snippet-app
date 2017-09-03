@@ -2,11 +2,18 @@
 <div class="user">
   <div class="profile">
     {{#userInfo}}
-    <img src="{{img}}" alt="">
+    <img src="{{img}}" class="img-thumbnail float-left prof-pic" alt="">
     <h2>{{username}}</h2>
-    <h3>{{name}}</h3>
-    <p>{{bio}}</p>
+    <h4 class="text-muted">{{name}}</h4>
+    <p>Bio: {{bio}}</p>
+    <p>Snippets: {{snippets.length}}</p>
     {{/userInfo}}
   </div>
+  <hr>
+  {{#snippets}}
+  <div class="snipe">
+    {{>_snipe}}
+  </div>
+  {{/snippets}}
 </div>
 {{>_footer}}

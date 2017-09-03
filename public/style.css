@@ -22,3 +22,8 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.prof-pic {
+	max-width: 200px;
+	margin-right: 10px;
+}

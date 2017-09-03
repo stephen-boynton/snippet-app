@@ -5,6 +5,7 @@ mongoose.Promise = require("bluebird");
 mongoose.connect("mongodb://localhost:27017/snippetdb");
 
 function getByUserName(userName) {
+	console.log(userName);
 	return User.find({ username: userName });
 }
 

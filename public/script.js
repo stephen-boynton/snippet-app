@@ -32,7 +32,8 @@ function loginUser(userCreds) {
 	return fetch(`${baseUrl}/login`, {
 		method: "POST",
 		body: JSON.stringify(userCreds),
-		headers: { Accept: "application/json", "Content-Type": "application/json" }
+		headers: { Accept: "application/json", "Content-Type": "application/json" },
+		credentials: "same-origin"
 	})
 		.then(response => response.json())
 		.catch(err => console.log(err));
