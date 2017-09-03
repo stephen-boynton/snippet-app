@@ -14,36 +14,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
 	session({
-		secret: "hamsandwich",
-		saveUninitialized: false,
-		resave: false
+		secret: process.env.TOKEN_SECRET
 	})
 );
-
-app.use((req, res, next) => {
-	if (!req.session.user) {
-		req.session.user = "";
-		req.session.AU = false;
-		req.session.message = "";
-		next();
-	} else {
-		next();
-	}
-});
-
-app.use((req, res, next) => {
-	if (req.session.user) {
-		req.session.message = "";
-		next();
-	} else {
-		req.session.AU = false;
-		next();
-	}
-});
 
 app.use("/", homeRoutes);
 
 app.get("/", (req, res) => {
+	if (!req.session.user) {
+		req.session.user = "";
+		req.session.message = "";
+	}
+	console.log(req.session.user);
 	res.render("index");
 });
 
@@ -63,7 +45,7 @@ app.get("/user/newsnipe", (req, res) => {
 //================================================ Start here.
 app.post("/user/newsnipe", (req, res) => {
 	addSnipe(req.body).then(() => {
-		getbyId();
+		getById();
 		res.redirect(`/snipe/${user}`);
 	});
 });

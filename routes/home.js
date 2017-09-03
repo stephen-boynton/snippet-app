@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const session = require("express-session");
+const jwt = require("express-jwt");
 const { User, Snippet } = require("../models/Schema");
 const { getByUserName, addUser } = require("../dal");
 const { createToken, ensureAuthenticated } = require("../auth/helper");
@@ -7,25 +8,27 @@ const { createToken, ensureAuthenticated } = require("../auth/helper");
 router
 	.route("/signup")
 	.get((req, res) => {
+		console.log(req.session.id);
 		res.render("signup");
 	})
 	.post((req, res) => {
 		addUser(req.body).then(() => {
+			console.log(req.session.id);
+
 			res.redirect("/");
 		});
 	});
 
 router.route("/login").get((req, res) => {
-	console.log(req.session);
+	console.log(req.session.id);
+
 	res.render("login", { session: req.session });
 });
 
 router.route("/login").post((req, res) => {
 	getByUserName(req.body.username).then(user => {
-		console.log(user[0]);
 		if (!user[0]) {
 			req.session.message = "Invalid username or password.";
-			req.session.save();
 			res.redirect("/login");
 		} else {
 			User.validPassword(
@@ -40,7 +43,6 @@ router.route("/login").post((req, res) => {
 							id: user[0]._id,
 							bio: user[0].bio
 						};
-						console.log(req.session.user);
 						res.send({ token: createToken(user), roles: user.roles });
 					} else if (err) {
 						console.log(err);
