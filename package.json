@@ -19,7 +19,8 @@
 		"jsonwebtoken": "^7.4.3",
 		"moment": "^2.18.1",
 		"mongoose": "^4.11.9",
-		"mustache-express": "^1.2.5"
+		"mustache-express": "^1.2.5",
+		"prismjs": "^1.6.0"
 	},
 	"devDependencies": {
 		"nodemon": "^1.11.0"

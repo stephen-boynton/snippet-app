@@ -1,0 +1,8 @@
+<div class="snippet-body">
+  <h4>{{title}}</h4>
+  <h6>{{author.username}}</h6>
+  <h6 class="text-muted">{{language}}</h6>
+  <pre><code class="language-{{language}}">{{code}}</code></pre>
+  <p class="text-muted notes">{{notes}}</p>
+{{#tags}}<a href="#">{{.}}</a>{{/tags}}
+</div>

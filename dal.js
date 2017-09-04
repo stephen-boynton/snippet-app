@@ -31,7 +31,29 @@ function addUser(newUser) {
 	return Promise.resolve("success");
 }
 
+function addSnipe(newSnipe, userId) {
+	console.log("Saving snipe");
+	console.log(newSnipe);
+	const snipe = new Snippet({
+		title: newSnipe.title,
+		language: newSnipe.language,
+		code: newSnipe.code,
+		notes: newSnipe.notes,
+		tags: [newSnipe.tags],
+		author: userId
+	});
+	console.log(snipe);
+	snipe.save(function(err) {
+		console.log(err);
+	});
+	User.find({ _id: userId }).then(user => {
+		user[0].snippets.push(snipe._id);
+	});
+	return Promise.resolve("success");
+}
+
 module.exports = {
 	getByUserName,
-	addUser
+	addUser,
+	addSnipe
 };

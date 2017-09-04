@@ -12,7 +12,8 @@ const UserSchema = new mongoose.Schema({
 	name: { type: String },
 	email: { type: String },
 	bio: { type: String },
-	snippets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Snippet" }]
+	snippets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Snippet" }],
+	faved: [{ type: String }]
 });
 
 const SnippetSchema = new mongoose.Schema({

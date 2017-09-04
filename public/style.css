@@ -2,6 +2,17 @@
 	width: 25px;
 	margin: 0 10px;
 }
+.navbar {
+	width: 100%;
+	position: fixed;
+}
+.user,
+.new-snippet,
+.index,
+.login,
+.signup {
+	padding-top: 60px;
+}
 
 .signup,
 .signup-form {
@@ -16,14 +27,25 @@
 	margin: 5px 0;
 }
 
-.new-snippet-form {
+.prof-pic {
+	max-width: 150px;
+	margin-right: 10px;
+}
+
+.snipe {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
 }
 
-.prof-pic {
-	max-width: 200px;
-	margin-right: 10px;
+.snippet-body {
+	padding: 10px;
+	margin: 5px 0;
+	background-color: #fff6de;
+	width: 50%;
+}
+
+form {
+	margin-left: 20px;
+	max-width: 50%;
 }

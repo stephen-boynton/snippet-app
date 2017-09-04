@@ -7,7 +7,7 @@ const mustacheExpress = require("mustache-express");
 const mongoose = require("mongoose");
 const MongoStore = require("connect-mongo")(session);
 const { User, Snippet } = require("./models/Schema");
-const { getByUserName, addUser } = require("./dal");
+const { getByUserName, addUser, addSnipe } = require("./dal");
 const { createToken } = require("./auth/helper");
 app.engine("mustache", mustacheExpress());
 app.set("view engine", "mustache");
@@ -74,12 +74,12 @@ function alreadyExists(req, res, next) {
 }
 
 app.get("/", (req, res) => {
-	console.log(req.session.user);
-	req.session.reload(err => {
-		console.log(err);
-	});
-	console.log(req.session.id);
-	res.render("index", { user: req.session.user });
+	Snippet.find()
+		.populate("author", "username")
+		.exec((err, doc) => {
+			const completeSnips = doc.reverse();
+			res.render("index", { user: req.session.user, snippets: completeSnips });
+		});
 });
 
 app.get("/login", (req, res) => {
@@ -110,7 +110,23 @@ app.post("/signup", alreadyExists, (req, res) => {
 app.get("/snipe/:user", (req, res) => {
 	getByUserName(req.params.user).then(userPage => {
 		const [userInfo] = userPage;
-		res.render("user", { user: req.session.user, userInfo: userInfo });
+		Snippet.find({ author: userInfo._id }).then(authSnips => {
+			res.render("user", {
+				user: req.session.user,
+				userInfo: userInfo,
+				snippets: authSnips.reverse()
+			});
+		});
+	});
+});
+
+app.get("/user/newsnipe", (req, res) => {
+	res.render("newsnipe", { user: req.session.user });
+});
+
+app.post("/user/newsnipe", (req, res) => {
+	addSnipe(req.body, req.session.user.id).then(() => {
+		res.redirect(`/snipe/${req.session.user.username}`);
 	});
 });
 
