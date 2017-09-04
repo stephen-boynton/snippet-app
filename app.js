@@ -5,10 +5,13 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const mustacheExpress = require("mustache-express");
 const mongoose = require("mongoose");
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 const MongoStore = require("connect-mongo")(session);
 const { User, Snippet } = require("./models/Schema");
 const { getByUserName, addUser, addSnipe } = require("./dal");
 const { createToken } = require("./auth/helper");
+let currentUser;
 app.engine("mustache", mustacheExpress());
 app.set("view engine", "mustache");
 app.set("views", __dirname + "/views");
@@ -54,9 +57,11 @@ function passCheck(req, res, next) {
 					req.session.user = {
 						username: user[0].username,
 						img: user[0].img,
-						id: user[0]._id
+						id: user[0]._id,
+						faved: user[0].faved
 					};
-					console.log(req.session.id);
+					currentUser = req.session.user;
+					io.emit("info", req.session.user);
 					const token = createToken(user);
 					res.send({ token: token });
 				}
@@ -73,13 +78,61 @@ function alreadyExists(req, res, next) {
 	});
 }
 
-app.get("/", (req, res) => {
-	Snippet.find()
-		.populate("author", "username")
-		.exec((err, doc) => {
-			const completeSnips = doc.reverse();
-			res.render("index", { user: req.session.user, snippets: completeSnips });
+app.use((req, res, next) => {
+	if (req.session.user) {
+		User.find({ _id: req.session.user.id }).then(user => {
+			req.session.user = {
+				username: user[0].username,
+				img: user[0].img,
+				id: user[0]._id,
+				faved: user[0].faved
+			};
+			currentUser = req.session.user;
+			io.emit("info", req.session.user);
+			next();
 		});
+	} else {
+		next();
+	}
+});
+
+function favArray(snippets, userfavs) {
+	const favArray = [];
+	userfavs.forEach((elm, ind, arr) => {
+		for (let i = 0; i < snippets.length; i++) {
+			if (userfavs[ind] === snippets[i]) {
+				favArray.push(true);
+			} else {
+				favArray.push(false);
+			}
+		}
+	});
+}
+
+app.get("/", (req, res) => {
+	if (req.session.user) {
+		Snippet.find()
+			.populate("author", "username")
+			.exec((err, doc) => {
+				const completeSnips = doc.reverse();
+				const favorites = favArray(doc, req.session.user.faved);
+				res.render("index", {
+					user: req.session.user,
+					snippets: completeSnips,
+					favorites: favorites
+				});
+			});
+	} else {
+		Snippet.find()
+			.populate("author", "username")
+			.exec((err, doc) => {
+				const completeSnips = doc.reverse();
+				res.render("index", {
+					user: req.session.user,
+					snippets: completeSnips
+				});
+			});
+	}
 });
 
 app.get("/login", (req, res) => {
@@ -130,8 +183,47 @@ app.post("/user/newsnipe", (req, res) => {
 	});
 });
 
+io.on("connection", function(socket) {
+	console.log("a user connected");
+	socket.on("disconnect", function() {
+		console.log("user disconnected");
+	});
+});
+
+io.on("connection", function(socket) {
+	socket.on("fav", function(msg) {
+		Snippet.find({ _id: msg.snippet })
+			.then(snip => {
+				snip[0].faves++;
+				snip[0].save();
+			})
+			.then(snip => {
+				getByUserName(msg.user).then(user => {
+					console.log(user[0].faved);
+					user[0].faved.push(msg.snippet);
+					user[0].save();
+					console.log(user[0].faved);
+				});
+			});
+	});
+});
+// io.on("connection", function(socket) {
+// 	socket.on("unfav", function(msg) {
+// 		Snippet.find({ _id: msg.snippet })
+// 			.then(snip => {
+// 				snip[0].faves--;
+// 				snip[0].save();
+// 			})
+// 			.then(snip => {
+// 				getByUserName({ username: msg.user }).then(user => {
+// 					user[0].faved.slice(user[0].faved.indexOf(msg), 1);
+// 				});
+// 			});
+// 	});
+// });
+
 app.set("port", 3000);
 
-app.listen(app.get("port"), () => {
+http.listen(app.get("port"), () => {
 	console.log("Your app has started, sir.");
 });

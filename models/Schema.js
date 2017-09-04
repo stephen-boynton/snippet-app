@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
 	email: { type: String },
 	bio: { type: String },
 	snippets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Snippet" }],
-	faved: [{ type: String }]
+	faved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Snippet" }]
 });
 
 const SnippetSchema = new mongoose.Schema({
@@ -24,7 +24,7 @@ const SnippetSchema = new mongoose.Schema({
 	date: { type: String, default: moment().format() },
 	tags: [{ type: String }],
 	author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-	faves: { type: Number }
+	faves: { type: Number, default: 0 }
 });
 
 UserSchema.statics.generateHash = function(password) {

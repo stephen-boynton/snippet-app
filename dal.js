@@ -48,6 +48,7 @@ function addSnipe(newSnipe, userId) {
 	});
 	User.find({ _id: userId }).then(user => {
 		user[0].snippets.push(snipe._id);
+		user[0].save();
 	});
 	return Promise.resolve("success");
 }
