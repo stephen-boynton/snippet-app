@@ -13,8 +13,7 @@ const io = require("socket.io")(http);
 const MongoStore = require("connect-mongo")(session);
 const { User, Snippet } = require("./models/Schema");
 const { getByUserName, getUserById, addUser, addSnipe } = require("./dal");
-const { createToken } = require("./auth/helper");
-const mainRoutes = require("./routes/routes");
+const routes = require("./routes/routes");
 let currentUser;
 app.engine("mustache", mustacheExpress());
 app.set("view engine", "mustache");
@@ -49,7 +48,7 @@ app.use((req, res, next) => {
 	}
 });
 
-app.use("/", mainRoutes);
+app.use("/", routes);
 
 io.on("connection", function(socket) {
 	console.log("a user connected");

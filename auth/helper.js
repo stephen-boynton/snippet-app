@@ -19,16 +19,18 @@ function createToken(user) {
 }
 
 function ensureAuthenticated(req, res, next) {
+	console.log(req.headers.authorization);
 	if (!req.headers.authorization) {
 		return res
 			.status(401)
 			.send({ message: "Your request requires an Authorization Header" });
 	}
-	const token = req.headers.authorization.split(" ")[1];
+	const token = req.headers.authorization;
+	console.log(token);
 	const payload = jwt.verify(token, process.env.TOKEN_SECRET);
-	if (exp <= moment().unix()) {
-		return res.status(401).send({ message: "Token has expired." });
-	}
+	// if (exp <= moment().unix()) {
+	// 	return res.status(401).send({ message: "Token has expired." });
+	// }
 	req.user = payload;
 	next();
 }

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { createToken, ensureAuthenticated } = require("../auth/helper");
 const { User, Snippet } = require("../models/Schema");
 
 const {
@@ -153,6 +154,37 @@ router.route("/search").get((req, res) => {
 	searchSnippets(req.query.search).then(snippets => {
 		console.log(snippets);
 		res.render("index", { snippets: snippets, user: req.session.user });
+	});
+});
+
+router.route("/api/login").post((req, res) => {
+	User.findOne({ username: req.body.username }, function(err, user, next) {
+		if (err) return next(err);
+		if (!user) {
+			console.log(user);
+			console.log("There is no user...");
+			return res
+				.status(401)
+				.send({ message: "Wrong username and/or password" });
+		}
+		user.validPassword(req.body.password, user.password, function(
+			err,
+			isMatch
+		) {
+			console.log("is match", isMatch);
+			if (!isMatch) {
+				return res
+					.status(401)
+					.send({ message: "Wrong username and/or password" });
+			}
+			res.send({ token: createToken(user) });
+		});
+	});
+});
+
+router.route("/api/snippets").get(ensureAuthenticated, (req, res) => {
+	Snippet.find().then(snippets => {
+		res.send(JSON.stringify(snippets));
 	});
 });
 
