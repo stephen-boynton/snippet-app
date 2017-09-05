@@ -9,6 +9,10 @@ function getByUserName(userName) {
 	return User.find({ username: userName });
 }
 
+function getUserById(userID) {
+	return User.find({ _id: userID });
+}
+
 function addUser(newUser) {
 	console.log("Saving new user");
 	console.log(newUser.name);
@@ -34,12 +38,13 @@ function addUser(newUser) {
 function addSnipe(newSnipe, userId) {
 	console.log("Saving snipe");
 	console.log(newSnipe);
+	const tagArray = createTags(newSnipe.tags);
 	const snipe = new Snippet({
 		title: newSnipe.title,
 		language: newSnipe.language,
 		code: newSnipe.code,
 		notes: newSnipe.notes,
-		tags: [newSnipe.tags],
+		tags: tagArray,
 		author: userId
 	});
 	console.log(snipe);
@@ -53,8 +58,45 @@ function addSnipe(newSnipe, userId) {
 	return Promise.resolve("success");
 }
 
+function createTags(tagString) {
+	let tagArr = [];
+	if (tagString.indexOf(",") > -1) {
+		tagArr = tagString.split(", ");
+	} else {
+		tagArr = tagString;
+	}
+	return tagArr;
+}
+
+function getSnipe(snipeID) {
+	return Snippet.findOne({ _id: snipeID });
+}
+
+function findSnipeByTag(snipeTag) {
+	return Snippet.find({ tags: snipeTag });
+}
+
+//============================= Thanks goes to Nick for this one.
+function searchSnippets(search) {
+	return Snippet.find({
+		$or: [
+			{ title: { $regex: search, $options: "i" } },
+			{ language: { $regex: search, $options: "i" } },
+			{ code: { $regex: search, $options: "i" } },
+			{ notes: { $regex: search, $options: "i" } },
+			{ date: { $regex: search, $options: "i" } },
+			{ tags: { $regex: search, $options: "i" } }
+		]
+	}).populate("author");
+}
+//================================================================
+
 module.exports = {
 	getByUserName,
+	getUserById,
 	addUser,
-	addSnipe
+	addSnipe,
+	getSnipe,
+	findSnipeByTag,
+	searchSnippets
 };

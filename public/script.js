@@ -1,4 +1,5 @@
 const socket = io();
+const searchbar = document.querySelector(".search");
 const form = document.querySelector(".login-form");
 
 function setToken(token) {
@@ -18,7 +19,7 @@ function getIdToken() {
 }
 
 // //================================================ Socket.io stuff
-//
+
 const snippets = document.querySelector(".snipe");
 
 snippets.addEventListener("click", function(event) {

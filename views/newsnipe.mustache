@@ -1,7 +1,7 @@
 {{>_header}}
 <div class="new-snippet">
   <h2>Add a New Snippet</h2>
-  <form class="new-snippet-form" action="/user/newsnipe" method="POST">
+  <form class="new-snippet-form" action="/snipe/newsnipe" method="POST">
     <div class="form-group">
       <label for="title">Snippet Title</label>
       <input type="text" name="title" class="form-control" value="" placeholder="Snippet Name">
@@ -25,7 +25,7 @@
       <textarea name="notes"  class="form-control" rows="8" cols="40" placeholder="Your notes..."></textarea>
     </div>
     <div class="form-group">
-      <label for="tags">Categories</label>
+      <label for="tags">Categories (Please separate with commas.)</label>
       <input type="text"  class="form-control" name="tags" placeholder="Tags">
     </div>
     <button type="submit" class="btn btn-outline-success" name="button">Submit</button>

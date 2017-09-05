@@ -1,14 +1,11 @@
 <div class="snippet-body">
-  <h4>{{title}}</h4>
-  <h6>{{author.username}}</h6>
-  <h6 class="text-muted">{{language}}</h6>
+  <a href="/snipe/{{_id}}"><h4>{{title}}</h4></a>
+  <a href="/user/{{author.username}}"><h6>{{author.username}}</h6></a>
+  <a href="/snipe/langs/{{language}}"><h6 class="text-muted">{{language}}</h6></a>
   <pre><code class="language-{{language}}">{{code}}</code></pre>
   <p class="text-muted notes">{{notes}}</p>
-  {{#tags}}<a href="#">{{.}}</a>{{/tags}}
+  tags: {{#tags}}<a href="/tags/{{.}}">{{.}}</a>, {{/tags}}
   <div class="float-right">
-    {{^favorite}}
-    {{^.}}<img class="fav-star" src="/img/lit-sm.png" id="{{_id}}">{{/.}}
-    {{#.}}<img class="fav-star" src="/img/unlit-sm.png" id="{{_id}}">{{/.}}{{faves}}
-    {{/favorite}}
+    <img class="fav-star" src="/img/unlit-sm.png" id="{{_id}}">{{faves}}
   </div>
 </div>
